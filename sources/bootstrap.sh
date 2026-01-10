@@ -1,17 +1,19 @@
 #!/bin/bash
 
-source "utils.sh"
+SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}")/..)"
+source "${SRC_ROOT}/sources/utils.sh"
 
-# FPC Compiler
+# FPC Bootstrap
 FPC_PACKAGE_NAME=fpc-laz
 FPC_BOOTSTRAP_NAME=fpc-laz_3.2.2-210709_amd64.deb
 FPC_BOOTSTRAP=https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%204.4/$FPC_BOOTSTRAP_NAME
+FPC_BOOTSTRAP_DIR=fpc_bootstrap
 
 function install_fpc_bootstrap(){
-    local fpc_bootstrap_dir="$1"
+    local target_dir="$1/$FPC_BOOTSTRAP_DIR"
     pushd $(pwd) >/dev/null
-    create_empty_dir $fpc_bootstrap_dir
-    cd $fpc_bootstrap_dir
+    create_empty_dir $target_dir
+    cd $target_dir
     wget $FPC_BOOTSTRAP
     dpkg -i $FPC_BOOTSTRAP_NAME
     popd >/dev/null
@@ -19,9 +21,9 @@ function install_fpc_bootstrap(){
 }
 
 function uninstall_fpc_bootstrap(){
-    local fpc_bootstrap_dir="$1"
+    local target_dir="$1/$FPC_BOOTSTRAP_DIR"
     apt purge $FPC_PACKAGE_NAME -y
-    apt autoremove --purge
-    delete_dir $fpc_bootstrap_dir
+    apt autoremove --purge -y
+    delete_dir $target_dir
     return $?
 }

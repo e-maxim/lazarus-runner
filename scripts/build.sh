@@ -8,21 +8,18 @@ source "${SRC_ROOT}/sources/bootstrap.sh"
 source "${SRC_ROOT}/sources/compile.sh"
 source "${SRC_ROOT}/sources/packages.sh"
 
-OPT_DIR=/opt
+INSTALL_DIR=/opt
 PACKAGE_LIST_FILENAME="${SRC_ROOT}/scripts/packages_list.txt"
 POST_INSTALL_SCRIPT="${SRC_ROOT}/scripts/postinstall.sh"
 
-# FPC Bootstrap
-FPC_BOOTSTRAP_DIR=$OPT_DIR/fpc_bootstrap
-
 # FPC Sources
-FPC_DIR=$OPT_DIR/fpc
+FPC_DIR=$INSTALL_DIR/fpc
 FPC_FULLVERSION=3.2.3
 FPC_GIT_BRANCH=fixes_3_2
 FPC_GIT_REPO=https://github.com/fpc/FPCSource.git
 
 # Lazarus Sources
-LAZARUS_DIR=$OPT_DIR/lazarus
+LAZARUS_DIR=$INSTALL_DIR/lazarus
 LAZARUS_GIT_BRANCH=fixes_4
 LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
 
@@ -30,8 +27,9 @@ LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
 apt update
 apt upgrade -y
 apt install -y wget binutils gcc unzip git libgl-dev libgtk2.0-0 libgtk2.0-dev
-apt purge 'fp-*' fpc
-apt autoremove --purge
+# remove FPC if it exists
+apt purge 'fp-*' fpc -y
+apt autoremove --purge -y
 
 # get the FPC Sources
 git_sync_dir $FPC_DIR $FPC_GIT_REPO $FPC_GIT_BRANCH
@@ -40,7 +38,7 @@ git_sync_dir $FPC_DIR $FPC_GIT_REPO $FPC_GIT_BRANCH
 git_sync_dir $LAZARUS_DIR $LAZARUS_GIT_REPO $LAZARUS_GIT_BRANCH
 
 # install latest FPC bootstrap that is known to work with building lazarus (or lazbuild).
-install_fpc_bootstrap $FPC_BOOTSTRAP_DIR
+nstall_fpc_bootstrap $INSTALL_DIR
 
 # compile FPC for Win64
 compile_win64_fpc $FPC_DIR
@@ -49,7 +47,7 @@ compile_win64_fpc $FPC_DIR
 compile_linux_fpc $FPC_DIR
 
 # remove FPC bootstrap
-uninstall_fpc_bootstrap $FPC_BOOTSTRAP_DIR
+uninstall_fpc_bootstrap $INSTALL_DIR
 
 # this will link all compiled units from above into /fpc/units/[x86_64-linux | x86_64-win64]
 make_links_to_units $FPC_DIR $FPC_FULLVERSION
