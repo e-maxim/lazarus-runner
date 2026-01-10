@@ -13,9 +13,7 @@ install_one_package(){
 function install_packages(){
     local target_dir="$1"
     local packages_file="$2"
-    if [ ! -f "$packages_file" ]; then
-        return 0
-    fi
+    [[ ! -f "$packages_file" ]] && return 0
 
     while IFS= read -r one_package_path || [[ -n "$one_package_path" ]]; do
         # trim

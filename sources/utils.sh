@@ -1,32 +1,20 @@
 #!/bin/bash
 
-function is_system_dir(){
-    local target_dir="$1"
-    if [[ -d "$target_dir" ]]; then
-        case "$target_dir" in
-            "/"|"/home"|"/root"|"/usr"|"/bin"|"/etc"|"/var")
-                return 0
-            ;;
-        esac
-    fi
-    return 1
-}
-
 function delete_dir(){
     local target_dir="$1"
-    if is_system_dir "$target_dir"; then
-        echo "❌ Refusing to delete protected system directory: $target_dir"
-        return 1
-    fi
+    [[ ! -d "$target_dir" ]] && return 0
+    case "$target_dir" in
+        "/"|"/home"|"/root"|"/usr"|"/bin"|"/etc"|"/var")
+            echo "❌ Refusing to delete protected system directory: $target_dir"
+            return 1
+        ;;
+    esac
     rm -rf "$target_dir"
-    return $?
 }
 
-function create_empty_dir(){
+function empty_dir(){
     local target_dir="$1"
-    if [[ -d "$target_dir" ]]; then
-        delete_dir $target_dir
-    fi
+    [[ -d "$target_dir" ]] && delete_dir $target_dir
     mkdir $target_dir
     return $?
 }

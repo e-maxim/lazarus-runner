@@ -1,8 +1,5 @@
 #!/bin/bash
 
-SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}")/..)"
-source "${SRC_ROOT}/sources/utils.sh"
-
 WIN64_DIR=x86_64-win64
 LINUX_DIR=x86_64-linux
 
@@ -10,7 +7,7 @@ compile_win64_fpc(){
     local target_dir="$1"
     pushd $(pwd) >/dev/null
     cd $target_dir
-    create_empty_dir "$target_dir/$WIN64_DIR"
+    empty_dir "$target_dir/$WIN64_DIR"
     make crossinstall OS_TARGET=win64 CPU_TARGET=x86_64 INSTALL_PREFIX=$target_dir/$WIN64_DIR
     popd >/dev/null
 }
@@ -19,7 +16,7 @@ compile_linux_fpc(){
     local target_dir="$1"
     pushd $(pwd) >/dev/null
     cd $target_dir
-    create_empty_dir "$target_dir/$LINUX_DIR"
+    empty_dir "$target_dir/$LINUX_DIR"
     make install OS_TARGET=linux CPU_TARGET=x86_64 INSTALL_PREFIX=$target_dir/$LINUX_DIR
     popd >/dev/null
 }
@@ -45,11 +42,9 @@ function exists_compiler_directory(){
 function make_links_to_units(){
     local target_dir="$1"
     local fpc_version="$2"
-    if ! exists_compiler_directory $target_dir $fpc_version; then
-       return 1
-    fi   
+    ! exists_compiler_directory $target_dir $fpc_version && return 1
     local units_dir="$target_dir/units"
-    create_empty_dir $units_dir
+    empty_dir $units_dir
     ln -sf $target_dir/$LINUX_DIR/lib/fpc/$fpc_version/units/x86_64-linux $units_dir/$LINUX_DIR
     ln -sf $target_dir/$WIN64_DIR/lib/fpc/$fpc_version/units/x86_64-win64 $units_dir/$WIN64_DIR
     return $?
@@ -59,17 +54,15 @@ function make_links_to_units(){
 function make_links_to_bin(){
     local target_dir="$1"
     local fpc_version="$2"
-    if ! exists_compiler_directory $target_dir $fpc_version; then
-       return 1
-    fi   
+    ! exists_compiler_directory $target_dir $fpc_version && return 1
 
     local bin_dir="$target_dir/bin"
     local bin_linux_dir="$bin_dir/$LINUX_DIR"
     local bin_win64_dir="$bin_dir/$WIN64_DIR"
 
-    create_empty_dir $bin_dir
-    create_empty_dir $bin_linux_dir
-    create_empty_dir $bin_win64_dir
+    empty_dir $bin_dir
+    empty_dir $bin_linux_dir
+    empty_dir $bin_win64_dir
 
     ln -sf $target_dir/$LINUX_DIR/bin/* $bin_linux_dir
     ln -sf $target_dir/$LINUX_DIR/lib/fpc/$fpc_version/ppcx64 $bin_linux_dir/ppcx64

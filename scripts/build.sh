@@ -38,7 +38,7 @@ git_sync_dir $FPC_DIR $FPC_GIT_REPO $FPC_GIT_BRANCH
 git_sync_dir $LAZARUS_DIR $LAZARUS_GIT_REPO $LAZARUS_GIT_BRANCH
 
 # install latest FPC bootstrap that is known to work with building lazarus (or lazbuild).
-nstall_fpc_bootstrap $INSTALL_DIR
+install_fpc_bootstrap $INSTALL_DIR
 
 # compile FPC for Win64
 compile_win64_fpc $FPC_DIR
