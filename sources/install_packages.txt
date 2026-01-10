@@ -1,0 +1,4 @@
+# Add the path to a .lpk file on each line, e.g. /opt/some_package/my_package.lpk
+# Relative paths from the Lazarus directory are also supported, e.g. components/opengl/lazopenglcontext.lpk
+
+components/opengl/lazopenglcontext.lpk
