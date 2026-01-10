@@ -33,7 +33,7 @@ function exists_compiler_directory(){
     local target_dir="$1"
     local fpc_version="$2"
     if [[ ! -d "$target_dir/$LINUX_DIR/lib/fpc/$fpc_version" || ! -d "$target_dir/$WIN64_DIR/lib/fpc/$fpc_version" ]]; then
-        echo "Directories with the full version of FPC ($fpc_version) not found, please check the correctness of the FPC_FULLVERSION variable."
+        echo "Directories with the full version of FPC ($fpc_version) not found, please check the correctness of the FPC_VERSION variable."
         return 1
     fi
     return 0
@@ -79,15 +79,15 @@ function make_links_to_bin(){
 function make_lazbuild_aliases(){
     local target_dir="$1"
 
-    # Linux: lazbuildl64
-    echo "$target_dir/lazbuild --os=linux --cpu=x86_64 --primary-config-path=$target_dir --lazarusdir=$target_dir --compiler=/usr/bin/ppcx64 \$*" > /usr/bin/lazbuildl64
-    chmod 777 /usr/bin/lazbuildl64
+    # Linux
+    echo "$target_dir/lazbuild --os=linux --cpu=x86_64 --primary-config-path=$target_dir --lazarusdir=$target_dir --compiler=/usr/bin/ppcx64 \$*" > "/usr/bin/$LAZBUILD_LINUX_ALIAS"
+    chmod 777 "/usr/bin/$LAZBUILD_LINUX_ALIAS"
 
-    # Win64: lazbuildw64
-    echo "$target_dir/lazbuild --os=win64 --cpu=x86_64 --primary-config-path=$target_dir --lazarusdir=$target_dir --compiler=/usr/bin/ppcrossx64 --widgetset=win32 \$*" > /usr/bin/lazbuildw64
-    chmod 777 /usr/bin/lazbuildw64
+    # Win64
+    echo "$target_dir/lazbuild --os=win64 --cpu=x86_64 --primary-config-path=$target_dir --lazarusdir=$target_dir --compiler=/usr/bin/ppcrossx64 --widgetset=win32 \$*" > "/usr/bin/$LAZBUILD_WIN64_ALIAS"
+    chmod 777 "/usr/bin/$LAZBUILD_WIN64_ALIAS"
 
     # lazbuild: help
-    echo "printf \"Use lazbuildXX with l64 for Linux and w64 for Windows\n\"" > /usr/bin/lazbuild
+    echo "printf \"Use $LAZBUILD_LINUX_ALIAS for Linux and $LAZBUILD_WIN64_ALIAS for Windows\n\"" > /usr/bin/lazbuild
     chmod 777 /usr/bin/lazbuild
 }     

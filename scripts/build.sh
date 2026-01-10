@@ -2,25 +2,30 @@
 
 set -e
 
+# Params
+LAZARUS_INSTALL_DIR="${LAZARUS_INSTALL_DIR:-/opt}"
+FPC_VERSION="${FPC_VERSION:-3.2.3}"
+FPC_GIT_BRANCH="${FPC_GIT_BRANCH:-fixes_3_2}"
+LAZARUS_GIT_BRANCH="${LAZARUS_GIT_BRANCH:-fixes_4}"
+LAZBUILD_WIN64_ALIAS="${LAZBUILD_WIN64_ALIAS:-lazbuild_win64}"
+LAZBUILD_LINUX_ALIAS="${LAZBUILD_LINUX_ALIAS:-lazbuild_linux}"
+
+# sources
+
 SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}")/..)"
 source "${SRC_ROOT}/sources/utils.sh"
 source "${SRC_ROOT}/sources/bootstrap.sh"
 source "${SRC_ROOT}/sources/compile.sh"
 source "${SRC_ROOT}/sources/packages.sh"
-
-INSTALL_DIR=/opt
 PACKAGE_LIST_FILENAME="${SRC_ROOT}/scripts/packages_list.txt"
 POST_INSTALL_SCRIPT="${SRC_ROOT}/scripts/postinstall.sh"
 
 # FPC Sources
-FPC_DIR=$INSTALL_DIR/fpc
-FPC_FULLVERSION=3.2.3
-FPC_GIT_BRANCH=fixes_3_2
+FPC_DIR=$LAZARUS_INSTALL_DIR/fpc
 FPC_GIT_REPO=https://github.com/fpc/FPCSource.git
 
 # Lazarus Sources
-LAZARUS_DIR=$INSTALL_DIR/lazarus
-LAZARUS_GIT_BRANCH=fixes_4
+LAZARUS_DIR=$LAZARUS_INSTALL_DIR/lazarus
 LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
 
 # Minimal dependencies for building FPC and Lazarus from source
@@ -38,7 +43,7 @@ git_sync_dir $FPC_DIR $FPC_GIT_REPO $FPC_GIT_BRANCH
 git_sync_dir $LAZARUS_DIR $LAZARUS_GIT_REPO $LAZARUS_GIT_BRANCH
 
 # install latest FPC bootstrap that is known to work with building lazarus (or lazbuild).
-install_fpc_bootstrap $INSTALL_DIR
+install_fpc_bootstrap $LAZARUS_INSTALL_DIR
 
 # compile FPC for Win64
 compile_win64_fpc $FPC_DIR
@@ -47,14 +52,14 @@ compile_win64_fpc $FPC_DIR
 compile_linux_fpc $FPC_DIR
 
 # remove FPC bootstrap
-uninstall_fpc_bootstrap $INSTALL_DIR
+uninstall_fpc_bootstrap $LAZARUS_INSTALL_DIR
 
 # this will link all compiled units from above into /fpc/units/[x86_64-linux | x86_64-win64]
-make_links_to_units $FPC_DIR $FPC_FULLVERSION
+make_links_to_units $FPC_DIR $FPC_VERSION
 
 # create bin folder and link all binary files of FPC into their specific platform folders /fpc/bin/[x86_64-linux | x86_64-win64]
 # also create links of the binaries to /usr/bin/
-make_links_to_bin $FPC_DIR $FPC_FULLVERSION
+make_links_to_bin $FPC_DIR $FPC_VERSION
 
 # set unit path relative to $FPC_DIR and make it globally known to future fpc calls
 fpcmkcfg -d basepath=$FPC_DIR -o /etc/fpc.cfg
