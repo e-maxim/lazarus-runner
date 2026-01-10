@@ -1,7 +1,6 @@
 #!/bin/bash
 
-SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}"))"
-source "${SRC_ROOT}/utils.sh"
+source "utils.sh"
 
 # FPC Compiler
 FPC_PACKAGE_NAME=fpc-laz

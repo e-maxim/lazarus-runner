@@ -1,11 +1,16 @@
 #!/bin/bash
 
-SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}"))"
-source "${SRC_ROOT}/fpc_common.sh"
+set -e
+
+SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}")/..)"
+source "${SRC_ROOT}/sources/utils.sh"
+source "${SRC_ROOT}/sources/bootstrap.sh"
+source "${SRC_ROOT}/sources/compile.sh"
+source "${SRC_ROOT}/sources/packages.sh"
 
 OPT_DIR=/opt
-PACKAGE_LIST_FILENAME="${SRC_ROOT}/install_packages.txt"
-POST_INSTALL_SCRIPT="${SRC_ROOT}/post_install.sh"
+PACKAGE_LIST_FILENAME="${SRC_ROOT}/scripts/packages_list.txt"
+POST_INSTALL_SCRIPT="${SRC_ROOT}/scripts/postinstall.sh"
 
 # FPC Bootstrap
 FPC_BOOTSTRAP_DIR=$OPT_DIR/fpc_bootstrap

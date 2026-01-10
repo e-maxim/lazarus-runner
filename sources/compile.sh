@@ -1,7 +1,6 @@
 #!/bin/bash
 
-SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}"))"
-source "${SRC_ROOT}/utils.sh"
+source "utils.sh"
 
 WIN64_DIR=x86_64-win64
 LINUX_DIR=x86_64-linux

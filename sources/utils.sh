@@ -2,7 +2,7 @@
 
 function is_system_dir(){
     local target_dir="$1"
-    if [ -d "$target_dir" ]; then
+    if [[ -d "$target_dir" ]]; then
         case "$target_dir" in
             "/"|"/home"|"/root"|"/usr"|"/bin"|"/etc"|"/var")
                 return 0
@@ -18,7 +18,7 @@ function clean_dir(){
         echo "❌ Refusing to clean protected system directory: $target_dir"
         return 1
     fi
-    if [ -d "$target_dir" ]; then
+    if [[ -d "$target_dir" ]]; then
         rm -rf "$target_dir"/* "$target_dir"/.[!.]* "$target_dir"/..?*
     fi
     return $?
@@ -36,11 +36,10 @@ function delete_dir(){
 
 function create_empty_dir(){
     local target_dir="$1"
-    if [ -d "$target_dir" ]; then
-        clean_dir $target_dir
-    else
-        mkdir $target_dir
+    if [[ -d "$target_dir" ]]; then
+        delete_dir $target_dir
     fi
+    mkdir $target_dir
     return $?
 }
 
@@ -48,7 +47,7 @@ function git_sync_dir(){
     local target_dir="$1"
     local repo_url="$2"
     local branch="$3"
-    if [ ! -d "$target_dir/.git" ]; then
+    if [[ ! -d "$target_dir/.git" ]]; then
         clean_dir "$target_dir"
         git clone --branch "$branch" "$repo_url" "$target_dir"
     else
