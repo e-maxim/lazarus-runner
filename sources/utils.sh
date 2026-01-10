@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Safely deletes a directory if it exists.
+# Protects critical system directories from being accidentally removed.
+#
+# The function checks if the given path exists and is a directory.
+# If the directory is listed as protected (e.g., /, /home, /root, /usr, etc.),
+# the deletion is refused and an error is returned.
+#
+# Arguments:
+#   $1 - Target directory to delete
+#
+# Returns:
+#   0 if the directory does not exist or was successfully deleted
+#   1 if the directory is protected and deletion is refused
+
 function delete_dir(){
     local target_dir="$1"
     [[ ! -d "$target_dir" ]] && return 0
@@ -11,6 +25,18 @@ function delete_dir(){
     esac
     rm -rf "$target_dir"
 }
+
+# Recreates a directory by deleting it if it exists and then creating it again.
+# Effectively ensures that the directory exists and is empty.
+#
+# If the directory already exists, it will be removed using delete_dir().
+# Then a new empty directory is created at the same path.
+#
+# Arguments:
+#   $1 - Target directory
+#
+# Returns:
+#   Exit code of the last executed command (mkdir or delete_dir)
 
 function empty_dir(){
     local target_dir="$1"
@@ -30,6 +56,7 @@ function empty_dir(){
 #
 # Returns:
 #   Exit code of the last executed Git command
+
 function git_sync_dir(){
     local target_dir="$1"
     local repo_url="$2"
