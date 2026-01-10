@@ -20,6 +20,6 @@ function uninstall_fpc_bootstrap(){
     local target_dir="$1/$FPC_BOOTSTRAP_DIR"
     apt purge $FPC_PACKAGE_NAME -y
     apt autoremove --purge -y
-    #delete_dir $target_dir
+    delete_dir $target_dir
     return $?
 }

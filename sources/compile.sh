@@ -39,7 +39,7 @@ function exists_compiler_directory(){
     return 0
 }
 
-function make_links_to_units(){
+make_links_to_units(){
     local target_dir="$1"
     local fpc_version="$2"
     ! exists_compiler_directory $target_dir $fpc_version && return 1
@@ -47,11 +47,10 @@ function make_links_to_units(){
     empty_dir $units_dir
     ln -sf $target_dir/$LINUX_DIR/lib/fpc/$fpc_version/units/x86_64-linux $units_dir/$LINUX_DIR
     ln -sf $target_dir/$WIN64_DIR/lib/fpc/$fpc_version/units/x86_64-win64 $units_dir/$WIN64_DIR
-    return $?
 }
 
 
-function make_links_to_bin(){
+make_links_to_bin(){
     local target_dir="$1"
     local fpc_version="$2"
     ! exists_compiler_directory $target_dir $fpc_version && return 1
@@ -73,10 +72,9 @@ function make_links_to_bin(){
     ln -sf $bin_linux_dir/fpc /usr/bin/fpc
     ln -sf $bin_linux_dir/fpcmkcfg /usr/bin/fpcmkcfg
     ln -sf $bin_linux_dir/fpcres /usr/bin/x86_64-win64-fpcres
-    return $?
 }
 
-function make_lazbuild_aliases(){
+make_lazbuild_aliases(){
     local target_dir="$1"
 
     # Linux

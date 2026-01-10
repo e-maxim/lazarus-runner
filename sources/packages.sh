@@ -10,7 +10,7 @@ install_one_package(){
     popd >/dev/null
 }
 
-function install_packages(){
+install_packages(){
     local target_dir="$1"
     local packages_file="$2"
     [[ ! -f "$packages_file" ]] && return 0

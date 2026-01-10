@@ -14,7 +14,7 @@
 #   0 if the directory does not exist or was successfully deleted
 #   1 if the directory is protected and deletion is refused
 
-function delete_dir(){
+delete_dir(){
     local target_dir="$1"
     [[ ! -d "$target_dir" ]] && return 0
     case "$target_dir" in
@@ -38,11 +38,10 @@ function delete_dir(){
 # Returns:
 #   Exit code of the last executed command (mkdir or delete_dir)
 
-function empty_dir(){
+empty_dir(){
     local target_dir="$1"
     [[ -d "$target_dir" ]] && delete_dir $target_dir
     mkdir $target_dir
-    return $?
 }
 
 # Synchronizes a local directory with a remote Git repository.
@@ -57,7 +56,7 @@ function empty_dir(){
 # Returns:
 #   Exit code of the last executed Git command
 
-function git_sync_dir(){
+git_sync_dir(){
     local target_dir="$1"
     local repo_url="$2"
     local branch="$3"
@@ -73,5 +72,4 @@ function git_sync_dir(){
         git clean -fdx
         popd >/dev/null
     fi
-    return $?
 }
