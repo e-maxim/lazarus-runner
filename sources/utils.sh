@@ -19,6 +19,17 @@ function empty_dir(){
     return $?
 }
 
+# Synchronizes a local directory with a remote Git repository.
+# If the target directory is not a Git repository, it will be deleted and freshly cloned.
+# If it already exists as a Git repo, it will be forcefully reset to match the specified branch.
+#
+# Arguments:
+#   $1 - Target directory
+#   $2 - Repository URL
+#   $3 - Branch name
+#
+# Returns:
+#   Exit code of the last executed Git command
 function git_sync_dir(){
     local target_dir="$1"
     local repo_url="$2"
