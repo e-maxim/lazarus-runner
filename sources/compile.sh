@@ -5,7 +5,11 @@ LINUX_DIR=x86_64-linux
 
 fpc_compiler_version(){
     local make_file="$1/installer/Makefile.fpc"
-    local version=$(grep '^version=' $make_file | cut -d'=' -f2)
+    local version=$(awk '
+        /^\[package\]/ {in_package=1; next}
+        /^\[/ {in_package=0}
+        in_package && /^version=/ {print $2; exit}
+        ' FS='=' $make_file)
     echo "$version"    
 }
 
