@@ -40,8 +40,8 @@ delete_dir(){
 
 empty_dir(){
     local target_dir="$1"
-    [[ -d "$target_dir" ]] && delete_dir $target_dir
-    mkdir $target_dir
+    [[ -d "$target_dir" ]] && delete_dir "$target_dir"
+    mkdir "$target_dir"
 }
 
 # Synchronizes a local directory with a remote Git repository.

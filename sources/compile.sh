@@ -9,79 +9,79 @@ fpc_compiler_version(){
         /^\[package\]/ {in_package=1; next}
         /^\[/ {in_package=0}
         in_package && /^version=/ {print $2; exit}
-        ' FS='=' $make_file)
+        ' FS='=' "$make_file")
     echo "$version"    
 }
 
 compile_win64_fpc(){
     local target_dir="$1"
     pushd $(pwd) >/dev/null
-    cd $target_dir
+    cd "$target_dir"
     empty_dir "$target_dir/$WIN64_DIR"
-    make crossinstall OS_TARGET=win64 CPU_TARGET=x86_64 INSTALL_PREFIX=$target_dir/$WIN64_DIR
+    make crossinstall OS_TARGET=win64 CPU_TARGET=x86_64 INSTALL_PREFIX="$target_dir/$WIN64_DIR"
     popd >/dev/null
 }
 
 compile_linux_fpc(){
     local target_dir="$1"
     pushd $(pwd) >/dev/null
-    cd $target_dir
+    cd "$target_dir"
     empty_dir "$target_dir/$LINUX_DIR"
-    make install OS_TARGET=linux CPU_TARGET=x86_64 INSTALL_PREFIX=$target_dir/$LINUX_DIR
+    make install OS_TARGET=linux CPU_TARGET=x86_64 INSTALL_PREFIX="$target_dir/$LINUX_DIR"
     popd >/dev/null
 }
 
 compile_linux_lazbuild(){
     local target_dir="$1"
     pushd $(pwd) >/dev/null
-    cd $target_dir
+    cd "$target_dir"
     make lazbuild OS_TARGET=linux CPU_TARGET=x86_64
     popd >/dev/null
 }
 
-function exists_compiler_directory(){
+exists_compiler_directory(){
     local target_dir="$1"
     local fpc_version="$2"
-    if [[ ! -d "$target_dir/$LINUX_DIR/lib/fpc/$fpc_version" || ! -d "$target_dir/$WIN64_DIR/lib/fpc/$fpc_version" ]]; then
+    if [[ ! -d "$target_dir/$LINUX_DIR/lib/fpc/$fpc_version" 
+        || ! -d "$target_dir/$WIN64_DIR/lib/fpc/$fpc_version" ]]; then
         echo "Directories with the full version of FPC ($fpc_version) not found, please check the correctness of the FPC git branch."
         return 1
     fi
-    return 0
 }
 
 make_links_to_units(){
     local target_dir="$1"
-    local fpc_version=$(fpc_compiler_version $target_dir)
-    ! exists_compiler_directory $target_dir $fpc_version && return 1
+    local fpc_version="$(fpc_compiler_version $target_dir)"
+    ! exists_compiler_directory "$target_dir" "$fpc_version" && return 1
     local units_dir="$target_dir/units"
-    empty_dir $units_dir
-    ln -sf $target_dir/$LINUX_DIR/lib/fpc/$fpc_version/units/x86_64-linux $units_dir/$LINUX_DIR
-    ln -sf $target_dir/$WIN64_DIR/lib/fpc/$fpc_version/units/x86_64-win64 $units_dir/$WIN64_DIR
+    empty_dir "$units_dir"
+    ln -sf "$target_dir/$LINUX_DIR/lib/fpc/$fpc_version/units/x86_64-linux" "$units_dir/$LINUX_DIR"
+    ln -sf "$target_dir/$WIN64_DIR/lib/fpc/$fpc_version/units/x86_64-win64" "$units_dir/$WIN64_DIR"
 }
 
 
 make_links_to_bin(){
     local target_dir="$1"
-    local fpc_version=$(fpc_compiler_version $target_dir)
-    ! exists_compiler_directory $target_dir $fpc_version && return 1
+    local fpc_version="$(fpc_compiler_version $target_dir)"
+    ! exists_compiler_directory "$target_dir" "$fpc_version" && return 1
 
     local bin_dir="$target_dir/bin"
     local bin_linux_dir="$bin_dir/$LINUX_DIR"
     local bin_win64_dir="$bin_dir/$WIN64_DIR"
 
-    empty_dir $bin_dir
-    empty_dir $bin_linux_dir
-    empty_dir $bin_win64_dir
+    empty_dir "$bin_dir"
+    empty_dir "$bin_linux_dir"
+    empty_dir "$bin_win64_dir"
 
-    ln -sf $target_dir/$LINUX_DIR/bin/* $bin_linux_dir
-    ln -sf $target_dir/$LINUX_DIR/lib/fpc/$fpc_version/ppcx64 $bin_linux_dir/ppcx64
-    ln -sf $target_dir/$WIN64_DIR/lib/fpc/$fpc_version/ppcrossx64 $bin_win64_dir/ppcrossx64
+    ln -sf "$target_dir/$LINUX_DIR/bin/"* "$bin_linux_dir"
+    ln -sf "$target_dir/$LINUX_DIR/lib/fpc/$fpc_version/ppcx64" "$bin_linux_dir/ppcx64"
+    ln -sf "$target_dir/$WIN64_DIR/lib/fpc/$fpc_version/ppcrossx64" "$bin_win64_dir/ppcrossx64"
 
-    ln -sf $bin_win64_dir/ppcrossx64 /usr/bin/ppcrossx64
-    ln -sf $bin_linux_dir/ppcx64 /usr/bin/ppcx64
-    ln -sf $bin_linux_dir/fpc /usr/bin/fpc
-    ln -sf $bin_linux_dir/fpcmkcfg /usr/bin/fpcmkcfg
-    ln -sf $bin_linux_dir/fpcres /usr/bin/x86_64-win64-fpcres
+    ln -sf "$bin_win64_dir/ppcrossx64" /usr/bin/ppcrossx64
+    ln -sf "$bin_linux_dir/ppcx64" /usr/bin/ppcx64
+    ln -sf "$bin_linux_dir/fpc" /usr/bin/fpc
+    ln -sf "$bin_linux_dir/fpcmkcfg" /usr/bin/fpcmkcfg
+    ln -sf "$bin_linux_dir/fpcres" /usr/bin/x86_64-win64-fpcres
 }
 
 make_lazbuild_aliases(){
@@ -96,6 +96,6 @@ make_lazbuild_aliases(){
     chmod 777 "/usr/bin/$LAZBUILD_WIN64_ALIAS"
 
     # lazbuild: help
-    echo "printf \"Use $LAZBUILD_LINUX_ALIAS for Linux and $LAZBUILD_WIN64_ALIAS for Windows\n\"" > /usr/bin/lazbuild
+    echo "printf \"Use '$LAZBUILD_LINUX_ALIAS' for Linux and '$LAZBUILD_WIN64_ALIAS' for Windows\n\"" > /usr/bin/lazbuild
     chmod 777 /usr/bin/lazbuild
 }     
