@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Some post-install operations"
+exit 0
