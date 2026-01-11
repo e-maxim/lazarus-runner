@@ -16,18 +16,20 @@ fpc_compiler_version(){
 compile_win64_fpc(){
     local target_dir="$1"
     pushd $(pwd) >/dev/null
+    local install_prefix=$target_dir/$WIN64_DIR
+    empty_dir "$install_prefix"
     cd "$target_dir"
-    empty_dir "$target_dir/$WIN64_DIR"
-    make crossinstall OS_TARGET=win64 CPU_TARGET=x86_64 INSTALL_PREFIX="$target_dir/$WIN64_DIR"
+    make crossinstall OS_TARGET=win64 CPU_TARGET=x86_64 INSTALL_PREFIX="$install_prefix"
     popd >/dev/null
 }
 
 compile_linux_fpc(){
     local target_dir="$1"
     pushd $(pwd) >/dev/null
+    local install_prefix=$target_dir/$LINUX_DIR
+    empty_dir "$install_prefix"
     cd "$target_dir"
-    empty_dir "$target_dir/$LINUX_DIR"
-    make install OS_TARGET=linux CPU_TARGET=x86_64 INSTALL_PREFIX="$target_dir/$LINUX_DIR"
+    make install OS_TARGET=linux CPU_TARGET=x86_64 INSTALL_PREFIX="$install_prefix"
     popd >/dev/null
 }
 
