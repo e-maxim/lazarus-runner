@@ -3,6 +3,12 @@
 WIN64_DIR=x86_64-win64
 LINUX_DIR=x86_64-linux
 
+fpc_compiler_version(){
+    local make_file="$1/installer/Makefile.fpc"
+    local version=$(grep '^version=' $make_file | cut -d'=' -f2)
+    echo "$version"    
+}
+
 compile_win64_fpc(){
     local target_dir="$1"
     pushd $(pwd) >/dev/null
@@ -33,7 +39,7 @@ function exists_compiler_directory(){
     local target_dir="$1"
     local fpc_version="$2"
     if [[ ! -d "$target_dir/$LINUX_DIR/lib/fpc/$fpc_version" || ! -d "$target_dir/$WIN64_DIR/lib/fpc/$fpc_version" ]]; then
-        echo "Directories with the full version of FPC ($fpc_version) not found, please check the correctness of the FPC_VERSION variable."
+        echo "Directories with the full version of FPC ($fpc_version) not found, please check the correctness of the FPC git branch."
         return 1
     fi
     return 0
@@ -41,7 +47,7 @@ function exists_compiler_directory(){
 
 make_links_to_units(){
     local target_dir="$1"
-    local fpc_version="$2"
+    local fpc_version=$(fpc_compiler_version $target_dir)
     ! exists_compiler_directory $target_dir $fpc_version && return 1
     local units_dir="$target_dir/units"
     empty_dir $units_dir
@@ -52,7 +58,7 @@ make_links_to_units(){
 
 make_links_to_bin(){
     local target_dir="$1"
-    local fpc_version="$2"
+    local fpc_version=$(fpc_compiler_version $target_dir)
     ! exists_compiler_directory $target_dir $fpc_version && return 1
 
     local bin_dir="$target_dir/bin"

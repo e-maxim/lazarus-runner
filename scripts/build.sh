@@ -4,7 +4,6 @@ set -e
 
 # Params
 LAZARUS_INSTALL_DIR="${LAZARUS_INSTALL_DIR:-/opt}"
-FPC_VERSION="${FPC_VERSION:-3.2.3}"
 FPC_GIT_BRANCH="${FPC_GIT_BRANCH:-fixes_3_2}"
 LAZARUS_GIT_BRANCH="${LAZARUS_GIT_BRANCH:-fixes_4}"
 LAZBUILD_WIN64_ALIAS="${LAZBUILD_WIN64_ALIAS:-lazbuild_win64}"
@@ -55,11 +54,11 @@ compile_linux_fpc $FPC_DIR
 uninstall_fpc_bootstrap $LAZARUS_INSTALL_DIR
 
 # this will link all compiled units from above into /fpc/units/[x86_64-linux | x86_64-win64]
-make_links_to_units $FPC_DIR $FPC_VERSION
+make_links_to_units $FPC_DIR
 
 # create bin folder and link all binary files of FPC into their specific platform folders /fpc/bin/[x86_64-linux | x86_64-win64]
 # also create links of the binaries to /usr/bin/
-make_links_to_bin $FPC_DIR $FPC_VERSION
+make_links_to_bin $FPC_DIR
 
 # set unit path relative to $FPC_DIR and make it globally known to future fpc calls
 fpcmkcfg -d basepath=$FPC_DIR -o /etc/fpc.cfg
