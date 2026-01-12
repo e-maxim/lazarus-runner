@@ -6,7 +6,7 @@ install_one_package(){
     echo "Installing package: <$package_path>"
     pushd $(pwd) >/dev/null
     cd "$target_dir"
-    ./lazbuild --add-package "$package_path" --primary-config-path="$target_dir" --lazarusdir="$target_dir"
+    ./lazbuild --add-package-link "$package_path" --primary-config-path="$target_dir" --lazarusdir="$target_dir"
     popd >/dev/null
 }
 
