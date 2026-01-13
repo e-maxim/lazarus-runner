@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Detect Astra Linux and select the appropriate package manager and upgrade command
+if grep -qi "astra" /etc/os-release; then
+    APT_COMMAND="apt-get"
+    APT_UPGRADE_COMMAND="dist-upgrade"
+else    
+    APT_COMMAND="apt"
+    APT_UPGRADE_COMMAND="upgrade"
+fi
+
 # Safely deletes a directory if it exists.
 # Protects critical system directories from being accidentally removed.
 #
@@ -72,4 +81,22 @@ git_sync_dir(){
         git clean -fdx
         popd >/dev/null
     fi
+}
+
+# Installs and configures the minimal set of system dependencies required for building the project.
+# This function updates the package lists, upgrades installed packages, installs required build tools
+# and libraries, configures necessary system links, and removes any existing FPC installation
+# to avoid potential conflicts.
+
+install_minimal_dependencies(){
+    $APT_COMMAND update || exit 1
+    $APT_COMMAND $APT_UPGRADE_COMMAND -y || exit 1
+    $APT_COMMAND install -y wget binutils gcc unzip git libgl-dev libgtk2.0-0 libgtk2.0-dev binutils-mingw-w64-x86-64 || exit 1
+
+    # Adding a link to windres for compiling Windows RC files
+    ln -sf /usr/bin/x86_64-w64-mingw32-windres /usr/bin/windres
+
+    # Remove existing FPC installation if present
+    $APT_COMMAND purge 'fp-*' fpc -y
+    $APT_COMMAND autoremove --purge -y
 }

@@ -27,16 +27,7 @@ LAZARUS_DIR="$LAZARUS_INSTALL_DIR/lazarus"
 LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
 
 # Minimal dependencies required to build FPC and Lazarus from source
-apt update
-apt upgrade -y
-apt install -y wget binutils gcc unzip git libgl-dev libgtk2.0-0 libgtk2.0-dev binutils-mingw-w64-x86-64
-
-# Adding a link to windres for compiling Windows RC files
-ln -sf /usr/bin/x86_64-w64-mingw32-windres /usr/bin/windres
-
-# Remove existing FPC installation if present
-apt purge 'fp-*' fpc -y
-apt autoremove --purge -y
+install_minimal_dependencies
 
 # Clone or update the FPC source repository
 git_sync_dir "$FPC_DIR" "$FPC_GIT_REPO" "$FPC_GIT_BRANCH"
