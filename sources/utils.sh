@@ -90,7 +90,13 @@ git_sync_dir(){
 
 install_minimal_dependencies(){
     $APT_COMMAND update || exit 1
+
     $APT_COMMAND $APT_UPGRADE_COMMAND -y || exit 1
+
+    # Apps for Gitlab Runner
+    $APT_COMMAND install -y ca-certificates sudo less curl gnupg lsb-release || exit 1  
+
+    # Apps for downloading and building Lazarus
     $APT_COMMAND install -y wget binutils gcc unzip git libgl-dev libgtk2.0-0 libgtk2.0-dev binutils-mingw-w64-x86-64 || exit 1
 
     # Adding a link to windres for compiling Windows RC files

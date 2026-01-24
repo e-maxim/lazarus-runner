@@ -15,6 +15,7 @@ source "${SRC_ROOT}/sources/utils.sh"
 source "${SRC_ROOT}/sources/bootstrap.sh"
 source "${SRC_ROOT}/sources/compile.sh"
 source "${SRC_ROOT}/sources/packages.sh"
+source "${SRC_ROOT}/sources/install_gitlab_runner.sh"
 PACKAGE_LIST_FILENAME="${SRC_ROOT}/scripts/packages_list.txt"
 POST_INSTALL_SCRIPT="${SRC_ROOT}/scripts/postinstall.sh"
 
@@ -28,6 +29,9 @@ LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
 
 # Minimal dependencies required to build FPC and Lazarus from source
 install_minimal_dependencies
+
+# Install Gitlab Runner
+install_gitlab_runner
 
 # Clone or update the FPC source repository
 git_sync_dir "$FPC_DIR" "$FPC_GIT_REPO" "$FPC_GIT_BRANCH"
