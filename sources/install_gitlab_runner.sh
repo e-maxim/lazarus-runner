@@ -4,6 +4,7 @@ install_gitlab_runner(){
     local target_dir="$1"
 
     [[ ! -d "$target_dir" ]] && mkdir "$target_dir"
+    pushd $(pwd) >/dev/null
     cd "$target_dir"
 
     # Download the repository configuration script:
@@ -12,7 +13,7 @@ install_gitlab_runner(){
 
     # Run the script
     bash "$script_name"
-
+    popd >/dev/null
     delete_dir "$target_dir"
 
     # Install 
