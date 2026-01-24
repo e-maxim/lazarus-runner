@@ -16,6 +16,7 @@ source "${SRC_ROOT}/sources/bootstrap.sh"
 source "${SRC_ROOT}/sources/compile.sh"
 source "${SRC_ROOT}/sources/packages.sh"
 source "${SRC_ROOT}/sources/install_gitlab_runner.sh"
+source "${SRC_ROOT}/sources/check_lazbuild.sh"
 PACKAGE_LIST_FILENAME="${SRC_ROOT}/scripts/packages_list.txt"
 POST_INSTALL_SCRIPT="${SRC_ROOT}/scripts/postinstall.sh"
 
@@ -75,3 +76,6 @@ if [ -f "$POST_INSTALL_SCRIPT" ]; then
      chmod +x "$POST_INSTALL_SCRIPT"
      . "$POST_INSTALL_SCRIPT"
 fi
+
+# Running unit tests with projects on Lazarus that are compiled for Win64 and Linux
+build_lazarus_projects "${SRC_ROOT}/tests"
