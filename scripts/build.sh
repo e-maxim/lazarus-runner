@@ -31,7 +31,7 @@ LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
 install_minimal_dependencies
 
 # Install Gitlab Runner
-install_gitlab_runner
+install_gitlab_runner "${LAZARUS_INSTALL_DIR}/gitlab_runner"
 
 # Clone or update the FPC source repository
 git_sync_dir "$FPC_DIR" "$FPC_GIT_REPO" "$FPC_GIT_BRANCH"
