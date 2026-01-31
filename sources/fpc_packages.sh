@@ -1,5 +1,8 @@
 #!/bin/bash
 
+[[ -n ${FPC_PACKAGES_SOURCED:-} ]] && return 0
+FPC_PACKAGES_SOURCED=1
+
 install_one_package(){
     local target_dir="$1"
     local package_path="$2"

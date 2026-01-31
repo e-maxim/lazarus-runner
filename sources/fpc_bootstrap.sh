@@ -1,9 +1,12 @@
 #!/bin/bash
 
-FPC_PACKAGE_NAME=fpc-laz
-FPC_BOOTSTRAP_NAME=fpc-laz_3.2.2-210709_amd64.deb
-FPC_BOOTSTRAP=https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%204.4/$FPC_BOOTSTRAP_NAME
-FPC_BOOTSTRAP_DIR=fpc_bootstrap
+[[ -n ${FPC_BOOTSTRAP_SOURCED:-} ]] && return 0
+FPC_BOOTSTRAP_SOURCED=1
+
+FPC_PACKAGE_NAME="${FPC_PACKAGE_NAME:-fpc-laz}"
+FPC_BOOTSTRAP_NAME="${FPC_BOOTSTRAP_NAME:-fpc-laz_3.2.2-210709_amd64.deb}"
+FPC_BOOTSTRAP="${FPC_BOOTSTRAP:-https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%204.4/$FPC_BOOTSTRAP_NAME}"
+FPC_BOOTSTRAP_DIR="${FPC_BOOTSTRAP_DIR:-fpc_bootstrap}"
 
 install_fpc_bootstrap(){
     local target_dir="$1/$FPC_BOOTSTRAP_DIR"

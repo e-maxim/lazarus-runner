@@ -2,21 +2,14 @@
 
 set -e
 
-# Parameters
-LAZARUS_INSTALL_DIR="${LAZARUS_INSTALL_DIR:-/opt}"
-FPC_GIT_BRANCH="${FPC_GIT_BRANCH:-fixes_3_2}"
-LAZARUS_GIT_BRANCH="${LAZARUS_GIT_BRANCH:-fixes_4}"
-LAZBUILD_WIN64_ALIAS="${LAZBUILD_WIN64_ALIAS:-lazbuild_win64}"
-LAZBUILD_LINUX_ALIAS="${LAZBUILD_LINUX_ALIAS:-lazbuild_linux}"
-
 # Sources
 SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}")/..)"
+source "${SRC_ROOT}/sources/enviroment_vars.sh"
 source "${SRC_ROOT}/sources/utils.sh"
-source "${SRC_ROOT}/sources/bootstrap.sh"
-source "${SRC_ROOT}/sources/compile.sh"
-source "${SRC_ROOT}/sources/packages.sh"
-source "${SRC_ROOT}/sources/install_gitlab_runner.sh"
-source "${SRC_ROOT}/sources/check_lazbuild.sh"
+source "${SRC_ROOT}/sources/fpc_bootstrap.sh"
+source "${SRC_ROOT}/sources/fpc_compiler.sh"
+source "${SRC_ROOT}/sources/fpc_packages.sh"
+source "${SRC_ROOT}/sources/fpc_project_builder.sh"
 PACKAGE_LIST_FILENAME="${SRC_ROOT}/scripts/packages_list.txt"
 POST_INSTALL_SCRIPT="${SRC_ROOT}/scripts/postinstall.sh"
 
@@ -30,9 +23,6 @@ LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
 
 # Minimal dependencies required to build FPC and Lazarus from source
 install_minimal_dependencies
-
-# Install Gitlab Runner
-install_gitlab_runner "${LAZARUS_INSTALL_DIR}/gitlab_runner"
 
 # Clone or update the FPC source repository
 git_sync_dir "$FPC_DIR" "$FPC_GIT_REPO" "$FPC_GIT_BRANCH"
@@ -73,8 +63,7 @@ install_packages "$LAZARUS_DIR" "$PACKAGE_LIST_FILENAME"
 
 # Run post-install script if it exists
 if [ -f "$POST_INSTALL_SCRIPT" ]; then
-     chmod +x "$POST_INSTALL_SCRIPT"
-     . "$POST_INSTALL_SCRIPT"
+     bash "$POST_INSTALL_SCRIPT"
 fi
 
 # Running unit tests with projects on Lazarus that are compiled for Win64 and Linux

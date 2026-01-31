@@ -1,5 +1,8 @@
 #!/bin/bash
 
+[[ -n ${GITLAB_RUNNER_SOURCED:-} ]] && return 0
+GITLAB_RUNNER_SOURCED=1
+
 install_gitlab_runner(){
     local target_dir="$1"
 

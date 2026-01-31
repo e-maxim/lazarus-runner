@@ -1,5 +1,8 @@
 #!/bin/bash
 
+[[ -n ${UTILS_SOURCED:-} ]] && return 0
+UTILS_SOURCED=1
+
 # Detect Astra Linux and select the appropriate package manager and upgrade command
 if grep -qi "astra" /etc/os-release; then
     APT_COMMAND="apt-get"
