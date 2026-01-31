@@ -3,10 +3,13 @@
 [[ -n ${UTILS_SOURCED:-} ]] && return 0
 UTILS_SOURCED=1
 
+LINUX_VERSION="debian"
+
 # Detect Astra Linux and select the appropriate package manager and upgrade command
 if grep -qi "astra" /etc/os-release; then
     APT_COMMAND="apt-get"
     APT_UPGRADE_COMMAND="dist-upgrade"
+    LINUX_VERSION="astra"
 else    
     APT_COMMAND="apt"
     APT_UPGRADE_COMMAND="upgrade"
@@ -96,16 +99,19 @@ install_minimal_dependencies(){
 
     $APT_COMMAND $APT_UPGRADE_COMMAND -y || exit 1
 
-    # Apps for Gitlab Runner
-    $APT_COMMAND install -y ca-certificates sudo less curl gnupg lsb-release || exit 1  
+    if [[ -n ${INSTALL_GITLAB_RUNNER:-} ]]; then
+        # Apps for Gitlab Runner
+        $APT_COMMAND install -y ca-certificates sudo less curl gnupg lsb-release || exit 1  
+    fi   
 
-    # Apps for downloading and building Lazarus
-    $APT_COMMAND install -y wget binutils gcc unzip git libgl-dev libgtk2.0-0 libgtk2.0-dev binutils-mingw-w64-x86-64 || exit 1
+    if [[ -n ${INSTALL_LAZBUILD:-} ]]; then
+        # Apps for downloading and building Lazarus
+        $APT_COMMAND install -y wget binutils gcc unzip git libgl-dev libgtk2.0-0 libgtk2.0-dev binutils-mingw-w64-x86-64 || exit 1
+        # Adding a link to windres for compiling Windows RC files
+        ln -sf /usr/bin/x86_64-w64-mingw32-windres /usr/bin/windres
+        # Remove existing FPC installation if present
+        $APT_COMMAND purge 'fp-*' fpc -y
+    fi    
 
-    # Adding a link to windres for compiling Windows RC files
-    ln -sf /usr/bin/x86_64-w64-mingw32-windres /usr/bin/windres
-
-    # Remove existing FPC installation if present
-    $APT_COMMAND purge 'fp-*' fpc -y
     $APT_COMMAND autoremove --purge -y
 }

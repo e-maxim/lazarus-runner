@@ -2,6 +2,8 @@
 
 set -e
 
+INSTALL_GITLAB_RUNNER=1
+
 # Sources
 SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}")/..)"
 source "${SRC_ROOT}/sources/init.sh"

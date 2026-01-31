@@ -2,6 +2,8 @@
 
 set -e
 
+INSTALL_LAZBUILD=1
+
 # Sources
 SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}")/..)"
 source "${SRC_ROOT}/sources/init.sh"
@@ -11,14 +13,6 @@ source "${SRC_ROOT}/sources/fpc_packages.sh"
 source "${SRC_ROOT}/sources/fpc_project_builder.sh"
 PACKAGE_LIST_FILENAME="${SRC_ROOT}/scripts/packages_list.txt"
 POST_INSTALL_SCRIPT="${SRC_ROOT}/scripts/postinstall.sh"
-
-# FPC sources
-FPC_DIR="$LAZARUS_INSTALL_DIR/fpc"
-FPC_GIT_REPO=https://github.com/fpc/FPCSource.git
-
-# Lazarus sources
-LAZARUS_DIR="$LAZARUS_INSTALL_DIR/lazarus"
-LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
 
 # Clone or update the FPC source repository
 git_sync_dir "$FPC_DIR" "$FPC_GIT_REPO" "$FPC_GIT_BRANCH"
