@@ -4,8 +4,7 @@ set -e
 
 # Sources
 SRC_ROOT="$(realpath $(dirname "${BASH_SOURCE[0]}")/..)"
-source "${SRC_ROOT}/sources/enviroment_vars.sh"
-source "${SRC_ROOT}/sources/utils.sh"
+source "${SRC_ROOT}/sources/init.sh"
 source "${SRC_ROOT}/sources/fpc_bootstrap.sh"
 source "${SRC_ROOT}/sources/fpc_compiler.sh"
 source "${SRC_ROOT}/sources/fpc_packages.sh"
@@ -20,9 +19,6 @@ FPC_GIT_REPO=https://github.com/fpc/FPCSource.git
 # Lazarus sources
 LAZARUS_DIR="$LAZARUS_INSTALL_DIR/lazarus"
 LAZARUS_GIT_REPO=https://gitlab.com/freepascal.org/lazarus/lazarus.git
-
-# Minimal dependencies required to build FPC and Lazarus from source
-install_minimal_dependencies
 
 # Clone or update the FPC source repository
 git_sync_dir "$FPC_DIR" "$FPC_GIT_REPO" "$FPC_GIT_BRANCH"
