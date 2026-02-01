@@ -7,11 +7,11 @@ detect_os_params(){
     OS_ID=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
     OS_VERSION_NAME=$(grep '^VERSION_NAME=' /etc/os-release | cut -d= -f2 | tr -d '"')
     OS_VERSION_ID=$(grep '^VERSION_ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
-    if [[ "$OS_ID" == "astra"]]; then
+    if [[ "$OS_ID" == "astra" ]]; then
         APT_COMMAND="apt-get"
         APT_UPGRADE_COMMAND="dist-upgrade"
-        [["$OS_VERSION_ID" == "1.7*"]] && OS_VERSION_NAME="buster"
-        [["$OS_VERSION_ID" == "1.8*"]] && OS_VERSION_NAME="bookworm"
+        [["$OS_VERSION_ID" == "1.7*" ]] && OS_VERSION_NAME="buster"
+        [["$OS_VERSION_ID" == "1.8*" ]] && OS_VERSION_NAME="bookworm"
     else
         APT_COMMAND="apt"
         APT_UPGRADE_COMMAND="upgrade"
