@@ -95,7 +95,7 @@ git_sync_dir(){
 # to avoid potential conflicts.
 
 install_minimal_dependencies(){
-    $APT_COMMAND update || exit 1
+    $APT_COMMAND update -y || exit 1
 
     $APT_COMMAND $APT_UPGRADE_COMMAND -y || exit 1
 
@@ -110,7 +110,7 @@ install_minimal_dependencies(){
         # Adding a link to windres for compiling Windows RC files
         ln -sf /usr/bin/x86_64-w64-mingw32-windres /usr/bin/windres
         # Remove existing FPC installation if present
-        $APT_COMMAND purge 'fp-*' fpc -y
+        $APT_COMMAND purge 'fp-*' fpc -y &> /dev/null
     fi    
 
     $APT_COMMAND autoremove --purge -y
