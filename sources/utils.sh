@@ -3,17 +3,21 @@
 [[ -n ${UTILS_SOURCED:-} ]] && return 0
 UTILS_SOURCED=1
 
-LINUX_VERSION="debian"
+detect_os_params(){
+    OS_ID=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
+    OS_VERSION_NAME=$(grep '^VERSION_NAME=' /etc/os-release | cut -d= -f2 | tr -d '"')
+    OS_VERSION_ID=$(grep '^VERSION_ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
+    if [[ "$OS_ID" == "astra"]]; then
+        APT_COMMAND="apt-get"
+        APT_UPGRADE_COMMAND="dist-upgrade"
+        [["$OS_VERSION_ID" == "1.7*"]] && OS_VERSION_NAME="buster"
+        [["$OS_VERSION_ID" == "1.8*"]] && OS_VERSION_NAME="bookworm"
+    else
+        APT_COMMAND="apt"
+        APT_UPGRADE_COMMAND="upgrade"
+    fi
+}
 
-# Detect Astra Linux and select the appropriate package manager and upgrade command
-if grep -qi "astra" /etc/os-release; then
-    APT_COMMAND="apt-get"
-    APT_UPGRADE_COMMAND="dist-upgrade"
-    LINUX_VERSION="astra"
-else    
-    APT_COMMAND="apt"
-    APT_UPGRADE_COMMAND="upgrade"
-fi
 
 # Safely deletes a directory if it exists.
 # Protects critical system directories from being accidentally removed.
@@ -95,8 +99,9 @@ git_sync_dir(){
 # to avoid potential conflicts.
 
 install_minimal_dependencies(){
+    detect_os_params
+    
     $APT_COMMAND update -y || exit 1
-
     $APT_COMMAND $APT_UPGRADE_COMMAND -y || exit 1
 
     if [[ -n ${INSTALL_GITLAB_RUNNER:-} ]]; then

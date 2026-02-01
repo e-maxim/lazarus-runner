@@ -9,7 +9,7 @@ install_gitlab_runner_for_astra(){
     | gpg --dearmor --batch --yes \
     -o /usr/share/keyrings/runner_gitlab-runner-archive-keyring.gpg
     echo "deb [signed-by=/usr/share/keyrings/runner_gitlab-runner-archive-keyring.gpg] \
-    https://packages.gitlab.com/runner/gitlab-runner/debian buster main" \
+    https://packages.gitlab.com/runner/gitlab-runner/debian $OS_VERSION_NAME main" \
     | tee /etc/apt/sources.list.d/runner_gitlab-runner.list >/dev/null
 }
 
@@ -31,7 +31,7 @@ install_gitlab_runner_linux(){
 }
 
 install_gitlab_runner(){
-    if [[ "$LINUX_VERSION" = "astra" ]]; then
+    if [[ "$OS_VERSION" = "astra" ]]; then
         install_gitlab_runner_for_astra
     else
         install_gitlab_runner_for_linux "$1"
