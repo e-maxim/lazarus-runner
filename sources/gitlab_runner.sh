@@ -4,6 +4,10 @@
 GITLAB_RUNNER_SOURCED=1
 
 install_gitlab_runner_for_astra(){
+    if [[ "$OS_VERSION_NAME" = "error" ]]; then
+        echo "Unknow version of the Astra Linux ($OS_ID $OS_VERSION_ID). Please, upgrade script."
+        return 1
+    fi
     install -d -m 0755 /usr/share/keyrings
     curl -fsSL https://packages.gitlab.com/runner/gitlab-runner/gpgkey \
     | gpg --dearmor --batch --yes \
@@ -13,7 +17,7 @@ install_gitlab_runner_for_astra(){
     | tee /etc/apt/sources.list.d/runner_gitlab-runner.list >/dev/null
 }
 
-install_gitlab_runner_linux(){
+install_gitlab_runner_for_linux(){
     local target_dir="$1"
 
     [[ ! -d "$target_dir" ]] && mkdir "$target_dir"
@@ -31,7 +35,7 @@ install_gitlab_runner_linux(){
 }
 
 install_gitlab_runner(){
-    if [[ "$OS_VERSION" = "astra" ]]; then
+    if [[ "$OS_ID" == "astra" ]]; then
         install_gitlab_runner_for_astra
     else
         install_gitlab_runner_for_linux "$1"

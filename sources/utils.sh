@@ -5,17 +5,21 @@ UTILS_SOURCED=1
 
 detect_os_params(){
     OS_ID=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
-    OS_VERSION_NAME=$(grep '^VERSION_NAME=' /etc/os-release | cut -d= -f2 | tr -d '"')
+    OS_VERSION_NAME=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d= -f2 | tr -d '"')
     OS_VERSION_ID=$(grep '^VERSION_ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
-    if [[ "$OS_ID" == "astra" ]]; then
+    if [[ "$OS_ID" = "astra" ]]; then
         APT_COMMAND="apt-get"
         APT_UPGRADE_COMMAND="dist-upgrade"
-        [["$OS_VERSION_ID" == "1.7*" ]] && OS_VERSION_NAME="buster"
-        [["$OS_VERSION_ID" == "1.8*" ]] && OS_VERSION_NAME="bookworm"
+        case "$OS_VERSION_ID" in
+            1.7*) OS_VERSION_NAME="buster" ;;
+            1.8*) OS_VERSION_NAME="bookworm" ;;
+            *) OS_VERSION_NAME=="error" ;;
+        esac
     else
         APT_COMMAND="apt"
         APT_UPGRADE_COMMAND="upgrade"
     fi
+    echo "Detecting OS: $APT_COMMAND $OS_ID $OS_VERSION_NAME $OS_VERSION_ID"
 }
 
 
@@ -100,14 +104,14 @@ git_sync_dir(){
 
 install_minimal_dependencies(){
     detect_os_params
-    
+
     $APT_COMMAND update -y || exit 1
     $APT_COMMAND $APT_UPGRADE_COMMAND -y || exit 1
 
     if [[ -n ${INSTALL_GITLAB_RUNNER:-} ]]; then
         # Apps for Gitlab Runner
         $APT_COMMAND install -y ca-certificates sudo less curl gnupg lsb-release || exit 1  
-    fi   
+    fi
 
     if [[ -n ${INSTALL_LAZBUILD:-} ]]; then
         # Apps for downloading and building Lazarus
@@ -116,7 +120,7 @@ install_minimal_dependencies(){
         ln -sf /usr/bin/x86_64-w64-mingw32-windres /usr/bin/windres
         # Remove existing FPC installation if present
         $APT_COMMAND purge 'fp-*' fpc -y &> /dev/null
-    fi    
+    fi
 
     $APT_COMMAND autoremove --purge -y
 }
